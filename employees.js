@@ -16,6 +16,7 @@ connection.connect(function(err) {
     createDepartment();
     createRole("VP", 150000, 1);
     createEmployee("Claire", "Clareson", 1, 1);
+    updateDepartment();
     readDepartment();
     readRole();
     readEmployee();
@@ -85,6 +86,15 @@ function createEmployee(first_name, last_name, role_id, manager_id) {
             throw err
         }
         console.log("Employee created!")
+    })
+}
+function updateDepartment(id, prop, value) {
+    let query= `UPDATE department set ${prop} = "${value} where id = "${id}`;
+    connection.query(query, function(err,result){
+        if(err){
+            throw err
+        }
+        console.log("Department updated!")
     })
 }
 

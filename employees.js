@@ -92,7 +92,7 @@ function readDepartment() {
     connection.query(query, function(err, result){
         console.log(`DEPARTMENTS:`)
         result.forEach(department => {
-            //console.log(`ID: ${department.id} | Name: ${department.name}`)
+            console.log(`ID: ${department.id} | Name: ${department.name}`)
         })
         mainMenu();
     });
@@ -135,31 +135,91 @@ function readEmployee() {
 }
 
 function createDepartment(name) {
-    let query= `INSERT into department (name) VALUES ("${name}")`;
-    connection.query(query, function(err, result){
-        if(err) throw err
-        
-        console.log("Department created!")
-    });
+    inquirer
+        .prompt({
+            name: "department",
+            type: "input",
+            message: "What is the name of the new department?",
+        })
+        .then(function(answer){
+        let query= `INSERT into department (name) VALUES ("${name}")`;
+        connection.query(query, function(err, res){
+            if(err) throw err
+            console.log(`You have added this department: ${(answer.department).toUpperCase()}.`)
+            
+            // console.log("Department created!")
+        })
+        readDepartment();
+        })
+
    
 }
 
 function createRole(title, salary, department_id) {
     let query= `INSERT into role (title, salary, department_id) VALUES ("${title}", "${salary}", "${department_id}")`;
     connection.query(query, function(err, result){
-        if(err){
-            throw err
-        }
-        console.log("Role created!")
+        if(err) throw err
+        inquirer
+        .prompt([{
+            name: "title",
+            type: "input",
+            message: "What is the title of the new role?",
+          }, 
+          {
+            name: "salary",
+            type: "input",
+            message: "What is the salary of the new role?",
+          },
+          {
+            name: "department_id",
+            type: "list",
+            message: "Which department does this role fall under?",
+            choices: function() {
+                var choicesArray = [];
+                res.forEach(res => {
+                    choicesArray.push(
+                        res.name
+                    );
+                })
+                return choicesArray;
+              }
+          }
+          ]) 
+            //console.log("Role created!")
     });
    
 }
 function createEmployee(first_name, last_name, role_id, manager_id) {
     let query= `INSERT into employee(first_name, last_name, role_id, manager_id) VALUES ("${first_name}", "${last_name}", "${role_id}","${manager_id}")`;
     connection.query(query, function(err, result){
-        if(err){
-            throw err
-        }
+        if(err) throw err;
+        inquirer
+        .prompt([{
+            name: "firstName",
+            type: "input",
+            message: "What is the employee's first name?",
+          }, 
+          {
+            name: "lastName",
+            type: "input",
+            message: "What is the employee's last name?",
+          },
+          {
+            name: "roleName",
+            type: "list",
+            message: "What role does the employee have?",
+            choices: function() {
+             rolesArray = [];
+                result.forEach(result => {
+                    rolesArray.push(
+                        result.title
+                    );
+                })
+                return rolesArray;
+              }
+          }
+          ]) 
+    
         console.log("Employee created!")
     })
 }

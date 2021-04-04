@@ -28,7 +28,7 @@ connection.connect(function(err) {
     // deleteEmployee(4);
     //readDepartment();
     // readRole();
-    // readEmployee();
+    //readEmployee();
 
     console.log("Welcome to the Employee Tracker!");
     mainMenu();
@@ -36,90 +36,67 @@ connection.connect(function(err) {
     
 });
 
-function mainMenu(){
-
-    // Prompt user to choose an option
+function mainMenu() {
     inquirer
-    .prompt({
-      name: "action",
-      type: "list",
-      message: "MAIN MENU",
-      choices: [
-        "View all employees",
-        // "View all employees by role",
-        // "View all employees by department",
-        //"View all employees by manager",
-        // "Add employee",
-        // "Add role",
-        // "Add department",
-        // "Update employee role",
-        // // "Delete employee",
-        // // "Delete role",
-        // "Delete department",
+      .prompt({
+        name: "action",
+        type: "list",
+        message: "What would you like to do?",
+        choices: [
+          "View all departments",
+          "View all roles",
+          "View all employees",
+          "Add a department",
+          "Add a role",
+          "Add an employee",
+          "Update employee role",
+          "Delete an Employee",
+          "Exit"
+        ]
+      })
+    .then(function(answer) {
+        switch (answer.action){
+        case 'View all departments':
+            readDepartment();
+            break;
+        case 'View all roles':
+            readRole();
+            break;
+        case 'View all employees':
+            readEmployee();
+            break;
+        case 'Add a department':
+            createDepartment();
+        break;
+        case 'Add a role':
+            createRole();
+        break;
+        case 'Add an employee':
+            createEmployee();
+        break;
+        case 'Update employee role':
+            updateRole();
+        break;
         
-      ]
-    })
-    .then((answer) => {
-
-        // Switch case depending on user option
-        switch (answer.action) {
-            case "View all employees":
-                readEmployee();
-                break;
-
-            // case "View all employees by department":
-            //     readDepartment();
-            //     break;
-
-            // case "View all employees by role":
-            //     readRole();
-            //     break;
-
-            // case "Add employee":
-            //     createEmployee();
-            //     break;
-
-            // case "Add department":
-            //     createDepartment();
-            //     break;
-            // case "Add role":
-            //     createRole();
-            //     break;
-            // case "Update employee role":
-            //     updateRole();
-            //     break;
-            // case "Update employee manager":
-            //     updateEmpMngr();
-            //     break;
-            
-            // case "Delete employee":
-            //     deleteEmployee();
-            //     break;
-            
-            
+        case 'Exit':
+            connection.end();
+        break;
         }
     });
 }
 
 
 
-
-
-
-
-
 function readDepartment() {
     let query= "SELECT * from department";
-    connection.query(query, function(err, res){
-        // if(err){
-        //     throw err
-        // }
+    connection.query(query, function(err, result){
         console.log(`DEPARTMENTS:`)
-        res.forEach(department => {
-            console.log(`ID: ${department.id} | Name: ${department.name}`)
+        result.forEach(department => {
+            //console.log(`ID: ${department.id} | Name: ${department.name}`)
         })
-        main();
+        mainMenu();
     });
+    
 };
 // console.table(result)   
      
@@ -129,22 +106,29 @@ function readDepartment() {
 function readRole() {
     let query= "SELECT * from role";
     connection.query(query, function(err, result){
-        if(err){
-            throw err
-        }
-        console.table(result)   
-    }) 
-    
-    
+        if(err) throw err
+        console.log(`ROLES:`)
+        result.forEach(role => {
+            console.log(`ID: ${role.id} | Title: ${role.title} | Salary: ${role.salary} | Department ID: ${role.department_id}`);
+        })
+        mainMenu();
+        
+    })
+    //mainMenu();
+
+    //console.table(result)   
 }
 
 function readEmployee() {
     let query= "SELECT * from employee";
     connection.query(query, function(err, result){
-        if(err){
+        if(err) {
             throw err
+            //mainMenu();
         }
-        console.table(result)   
+        mainMenu();
+        //console.table(result)   
+        
     }) 
     
     
@@ -153,9 +137,8 @@ function readEmployee() {
 function createDepartment(name) {
     let query= `INSERT into department (name) VALUES ("${name}")`;
     connection.query(query, function(err, result){
-        if(err){
-            throw err
-        }   
+        if(err) throw err
+        
         console.log("Department created!")
     });
    

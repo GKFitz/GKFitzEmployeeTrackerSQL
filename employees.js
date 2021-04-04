@@ -1,6 +1,6 @@
-const mysql = require('mysql2');
+const mysql = require('mysql');
 const inquirer = require('inquirer');
-
+const cTable= require("console.table");
  
 // create the connection to database
 const connection = mysql.createConnection({
@@ -12,16 +12,22 @@ const connection = mysql.createConnection({
 
 connection.connect(function(err) {
     if (err) throw err;
-    console.log("mysql connected")
-    //runSearch();
+    console.log("mysql connected");
+    readDepartment();
+    
 });
 
-//create department
-
-async function createDepartment(name) {
-    let query= `INSERT into department (name) VALUES ("${name}")`;
-    connection.query()
-
+function readDepartment() {
+    let query= "SELECT * from department";
+    connection.query(query, function(err, result){
+        if(err){
+            throw err
+        }
+        console.table(result)   
+    }) 
+    
+    
 }
-
+    
+    
 

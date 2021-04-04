@@ -15,6 +15,7 @@ connection.connect(function(err) {
     console.log("mysql connected");
     readDepartment();
     readRole();
+    readEmployee();
     
 });
 
@@ -31,6 +32,18 @@ function readDepartment() {
 }
 function readRole() {
     let query= "SELECT * from role";
+    connection.query(query, function(err, result){
+        if(err){
+            throw err
+        }
+        console.table(result)   
+    }) 
+    
+    
+}
+
+function readEmployee() {
+    let query= "SELECT * from employee";
     connection.query(query, function(err, result){
         if(err){
             throw err

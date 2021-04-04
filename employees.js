@@ -25,7 +25,7 @@ connection.connect(function(err) {
     updateDepartment();
     updateRole();
     updateEmployee();
-    
+    deleteEmployee(4);
     readDepartment();
     readRole();
     readEmployee();
@@ -124,6 +124,17 @@ function updateEmployee(id, prop, value){
         }
         console.log("Employee updated!")
     })
+}
+function deleteEmployee(id) {
+    let query= `DELETE from employee where id = "${id}"`;
+    connection.query(query, function(err, result){
+        if(err){
+            throw err
+        }
+        console.log("employee deleted!")   
+    }) 
+    
+    
 }
 
 

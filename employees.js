@@ -13,14 +13,23 @@ const connection = mysql.createConnection({
 connection.connect(function(err) {
     if (err) throw err;
     console.log("mysql connected");
+    // createDepartment("Admin");
+    // createRole("VP", 150000, 1);
+    // createEmployee("Claire", "Clareson", 1, 1);
     createDepartment();
     createRole("VP", 150000, 1);
     createEmployee("Claire", "Clareson", 1, 1);
+    // updateDepartment(1, "name", "Accounts Rec");
+    // updateEmployee(2, "first_name", "kelly");
+    // updateEmployee(2, "last_name", "Keller");
     updateDepartment();
     updateRole();
+    updateEmployee();
+    
     readDepartment();
     readRole();
     readEmployee();
+    
     
 });
 
@@ -105,6 +114,15 @@ function updateRole(id, prop, value) {
             throw err
         }
         console.log("Role updated!")
+    })
+}
+function updateEmployee(id, prop, value){
+    let query= `UPDATE employee set ${prop} = "${value} where id = "${id}`; 
+    connection.query(query, function(err,result){
+        if(err){
+            throw err
+        }
+        console.log("Employee updated!")
     })
 }
 

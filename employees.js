@@ -13,6 +13,7 @@ const connection = mysql.createConnection({
 connection.connect(function(err) {
     if (err) throw err;
     console.log("mysql connected");
+    createDepartment();
     readDepartment();
     readRole();
     readEmployee();
@@ -52,6 +53,17 @@ function readEmployee() {
     }) 
     
     
+}
+
+function createDepartment(name) {
+    let query= `INSERT into department (name) VALUES ("${name}")`;
+    connection.query(query, function(err, result){
+        if(err){
+            throw err
+        }   
+        console.log("Department created!")
+    });
+   
 }
 
     

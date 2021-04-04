@@ -16,34 +16,116 @@ connection.connect(function(err) {
     // createDepartment("Admin");
     // createRole("VP", 150000, 1);
     // createEmployee("Claire", "Clareson", 1, 1);
-    createDepartment();
-    createRole("VP", 150000, 1);
-    createEmployee("Claire", "Clareson", 1, 1);
+    // createDepartment();
+    // createRole("VP", 150000, 1);
+    // createEmployee("Claire", "Clareson", 1, 1);
     // updateDepartment(1, "name", "Accounts Rec");
     // updateEmployee(2, "first_name", "kelly");
     // updateEmployee(2, "last_name", "Keller");
-    updateDepartment();
-    updateRole();
-    updateEmployee();
-    deleteEmployee(4);
-    readDepartment();
-    readRole();
-    readEmployee();
+    // updateDepartment();
+    // updateRole();
+    // updateEmployee();
+    // deleteEmployee(4);
+    //readDepartment();
+    // readRole();
+    // readEmployee();
+
+    console.log("Welcome to the Employee Tracker!");
+    mainMenu();
     
     
 });
 
+function mainMenu(){
+
+    // Prompt user to choose an option
+    inquirer
+    .prompt({
+      name: "action",
+      type: "list",
+      message: "MAIN MENU",
+      choices: [
+        "View all employees",
+        // "View all employees by role",
+        // "View all employees by department",
+        //"View all employees by manager",
+        // "Add employee",
+        // "Add role",
+        // "Add department",
+        // "Update employee role",
+        // // "Delete employee",
+        // // "Delete role",
+        // "Delete department",
+        
+      ]
+    })
+    .then((answer) => {
+
+        // Switch case depending on user option
+        switch (answer.action) {
+            case "View all employees":
+                readEmployee();
+                break;
+
+            // case "View all employees by department":
+            //     readDepartment();
+            //     break;
+
+            // case "View all employees by role":
+            //     readRole();
+            //     break;
+
+            // case "Add employee":
+            //     createEmployee();
+            //     break;
+
+            // case "Add department":
+            //     createDepartment();
+            //     break;
+            // case "Add role":
+            //     createRole();
+            //     break;
+            // case "Update employee role":
+            //     updateRole();
+            //     break;
+            // case "Update employee manager":
+            //     updateEmpMngr();
+            //     break;
+            
+            // case "Delete employee":
+            //     deleteEmployee();
+            //     break;
+            
+            
+        }
+    });
+}
+
+
+
+
+
+
+
+
 function readDepartment() {
     let query= "SELECT * from department";
-    connection.query(query, function(err, result){
-        if(err){
-            throw err
-        }
-        console.table(result)   
-    }) 
+    connection.query(query, function(err, res){
+        // if(err){
+        //     throw err
+        // }
+        console.log(`DEPARTMENTS:`)
+        res.forEach(department => {
+            console.log(`ID: ${department.id} | Name: ${department.name}`)
+        })
+        main();
+    });
+};
+// console.table(result)   
+     
     
     
-}
+
 function readRole() {
     let query= "SELECT * from role";
     connection.query(query, function(err, result){

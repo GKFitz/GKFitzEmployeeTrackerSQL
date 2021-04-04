@@ -14,6 +14,7 @@ connection.connect(function(err) {
     if (err) throw err;
     console.log("mysql connected");
     createDepartment();
+    createRole("VP", 150000, 1);
     readDepartment();
     readRole();
     readEmployee();
@@ -62,6 +63,17 @@ function createDepartment(name) {
             throw err
         }   
         console.log("Department created!")
+    });
+   
+}
+
+function createRole(title, salary, department_id) {
+    let query= `INSERT into role (title, salary, department_id) VALUES ("${title}", "${salary}", "${department_id}")`;
+    connection.query(query, function(err, result){
+        if(err){
+            throw err
+        }
+        console.log("Role created!")
     });
    
 }

@@ -48,7 +48,8 @@ function mainMenu() {
           "View all employees",
           "Add a department",
           "Add a role",
-          "Add an employee",
+        //   "Add an employee",
+        //   "Update employee department",
           "Update employee role",
           "Delete an Employee",
           "Exit"
@@ -75,9 +76,15 @@ function mainMenu() {
         case 'Add an employee':
             createEmployee();
         break;
+        // case 'Update employee department':
+        //     updateDepartment();
+        // break;
         case 'Update employee role':
             updateRole();
         break;
+        // case 'Update employee':
+        //     updateEmployee();
+        // break;
         case 'Exit':
             connection.end();
         break;
@@ -120,7 +127,7 @@ function readEmployee() {
     let query= "SELECT * from employee";
     connection.query(query, function(err, res){
         if(err) throw err
-        console.table(result)
+        console.table(res)
         mainMenu();
         //console.table(result)   
         
@@ -230,39 +237,65 @@ function createRole() {
 //console.log("Role created!")
    
 
-function createEmployee(first_name, last_name, role_id, manager_id) {
-    let query= `INSERT into employee(first_name, last_name, role_id, manager_id) VALUES ("${first_name}", "${last_name}", "${role_id}","${manager_id}")`;
-    connection.query(query, function(err, result){
-        if(err) throw err;
-        inquirer
-        .prompt([{
-            name: "firstName",
-            type: "input",
-            message: "What is the employee's first name?",
-          }, 
-          {
-            name: "lastName",
-            type: "input",
-            message: "What is the employee's last name?",
-          },
-          {
-            name: "roleName",
-            type: "list",
-            message: "What role does the employee have?",
-            choices: function() {
-             rolesArray = [];
-                res.forEach(result => {
-                    rolesArray.push(
-                        res.title
-                    );
-                })
-                return rolesArray;
-              }
-          }
-          ]) 
-    
-        console.log("Employee created!")
+function createEmployee() {
+    let query= "SELECT * from role";
+    let role_name= [];
+    var roles= [];
+    connection.query(query, function(err, res){
+        if(err) throw err
+        // console.table(res)
+        // console.log(res)
+        for(let i= 0; i < res.length; i++){
+            let currentRole= res[i];
+            var currentTitle = currentRole.title;
+            var currentRoleID = currentRole.id;
+            var currentDeptID = currentRole.department_id;
+            let roleOBJ= {
+                id: currentRoleID,
+                title: currentTitle,
+                department_id: currentDeptID
+            }
+            roles.push(roleOBJ);
+            role_name.push(currentRole.title);
+        }
     })
+    inquirer
+    .prompt([{
+        name: "first_name",
+        type: "input",
+        message: "What is the employee's first name?",
+    }, 
+    {
+        name: "last_name",
+        type: "input",
+        message: "What is the employee's last name?",
+    },
+    {
+        name: "roleName",
+        type: "list",
+        message: "What role does the employee have?",
+        choices: role_name
+               
+    }
+
+    ]).then(function(res){
+        let roleID;
+            for(var i =0; i < roles.length; i++){
+                let currentRole= roles[i];
+                if(currentRole.title === res.roleName){
+                    roleID = currentRole.id;
+                }
+                
+            }
+            // console.log(roles)
+            // console.log(roleID)
+            connection.query(`INSERT into employee(first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [res.first_name, res.last_name, roleID, null], function(err, res){ 
+                if(err) throw err;
+                console.table(res);
+                mainMenu();
+    })
+
+})
 }
 function updateDepartment(id, prop, value) {
     let query= `UPDATE department set ${prop} = "${value} where id = "${id}`;
@@ -275,32 +308,76 @@ function updateDepartment(id, prop, value) {
 }
 
 function updateRole() {
+    readEmployee();
+    let queryEmployee= "SELECT * from employee";
+    let employee_name= [];
+    let employees= [];
+    connection.query(queryEmployee, function(err, res){
+        if(err) throw err
+        // console.log(res)
+        // mainMenu();
+        //console.table(result) 
+        for(let i= 0; i < res.length; i++){
+            let currentEmployee = res[i];
+            var currentName = currentEmployee.first_name;
+            // var currentName = currentEmployee.first_name + " " + currentEmployee.last_name;
+            var currentEmployeeID = currentEmployee.id;
+            let employeeOBJ= {
+                id: currentEmployeeID,
+                name: currentName,
+            }
+            employees.push(employeeOBJ);
+            employee_name.push(currentName);
+            // console.log(employee_name);
+            // console.log(employees);
+        }  
+    });
+    // console.log(employee_name)
+    // let queryRole= "SELECT * from role";
+    // let role_name= [];
+    // var roles= [];
+    // connection.query(queryRole, function(err, res){
+    //     if(err) throw err
+    //     // console.table(res)
+    //     // console.log(res)
+    //     for(let i= 0; i < res.length; i++){
+    //         let currentRole= res[i];
+    //         var currentTitle = currentRole.title;
+    //         var currentRoleID = currentRole.id;
+    //         var currentDeptID = currentRole.department_id;
+    //         let roleOBJ= {
+    //             id: currentRoleID,
+    //             title: currentTitle,
+    //             department_id: currentDeptID
+    //         }
+    //         roles.push(roleOBJ);
+    //         role_name.push(currentRole.title);
+    //     }
+    // })
     inquirer.prompt([
         {
-            message: "What is the first name of the employee you would like to update?",
-            type: "input",
-            name: "first_name"
+            name: "employee",
+            message: "What is the name of the employee you would like to update?",
+            type: "list",
+            choices: employee_name
+            
         },  
         {
-            message: "What is the last name of the employee you would like to update?",
-            type: "input",
-            name: "last_name"
-        },
-        {
+            name: "role_id",
             message: "enter the new role ID:",
-            type: "number",
-            name: "role_id"
+            type: "number"
         }
     ]).then(function(res){
-            connection.query("UPDATE employee SET role_id = ? WHERE first_name = ? WHERE last_name =?", [res.role_id, res.first_name, res.last_name], function(err,res){
-                if(err) throw err
-                console.log(res);
-            });
-            mainMenu();
+            console.log(res)
+            // connection.query("UPDATE employee SET role_id = ? WHERE first_name = ?, WHERE last_name =?", [res.role_id, res.first_name, res.last_name], function(err,res){
+            //     if(err) throw err
+            //     console.log(res);
+            // });
+            // mainMenu();
         })
 }
 // id, prop, value
-function updateEmployee(id, prop, value){
+function updateEmployeeRole(id, prop, value){
     let query= `UPDATE employee set ${prop} = "${value} where id = "${id}`; 
     connection.query("UPDATE employee SET role_id = ? WHERE first_name = ?", [response.role_id, response.name],query, function(err,result){
         if(err){

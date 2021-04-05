@@ -39,7 +39,7 @@ connection.connect(function(err) {
 function mainMenu() {
     inquirer
       .prompt({
-        // name: "action",
+        name: "choice",
         message: "What would you like to do?",
         type: "list",
         choices: [
@@ -53,7 +53,7 @@ function mainMenu() {
           "Delete an Employee",
           "Exit"
         ],
-        name: "choice"
+        // name: "choice"
       })
     .then(answer => {
         switch (answer.choice){
@@ -158,6 +158,25 @@ function createDepartment() {
 
 
 function createRole() {
+    let query= "SELECT * from department";
+    let department_name= [];
+    var department= [];
+    connection.query(query, function(err, res){
+        if(err) throw err
+        // console.table(res)
+        // console.log(res)
+        for(let i= 0; i < res.length; i++){
+            let currentDept= res[i];
+            var currentName = currentDept.name;
+            var currentID= currentDept.id
+            let deptOBJ= {
+                id: currentID,
+                name: currentName
+            }
+            department.push(deptOBJ);
+            department_name.push(currentDept.name);
+        }
+    })
     inquirer
         .prompt([
         {
@@ -171,12 +190,26 @@ function createRole() {
             message: "What is the salary of the new role?",
         },
         {
-            name: "department_id",
+            name: "department_name",
             type: "list",
             message: "Which department does this role fall under?",
+            choices: department_name
         }
         ]).then(function(res){
-            connection.query(`INSERT INTO role (title, salary, department_id) VALUES (? ? ?)` [res.title, res.salary, res.department], function(err, res){
+            let departmentID;
+            for(var i =0; i < department.length; i++){
+                let currentDept= department[i];
+                if(currentDept.name === res.department_name){
+                    departmentID = currentDept.id;
+                }
+                
+            }
+            // console.log(department)
+            // console.log(departmentID)
+            console.log(res.title)
+            console.log(res.salary)
+            console.log(departmentID)
+            connection.query(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`, [res.title, res.salary, departmentID], function(err, res){
                 if(err) throw err
                 console.table(res);
             });

@@ -242,7 +242,7 @@ function createEmployee() {
            
             connection.query(`INSERT into employee(first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [res.first_name, res.last_name, roleID, null], function(err, res){ 
                 if(err) throw err;
-                console.table(res);
+                // console.table(res);
                 mainMenu();
     })
 
@@ -386,7 +386,7 @@ function deleteEmployee() {
             connection.query(
                 "DELETE FROM employee WHERE id = ? ;", employeeID,function(err,res){
                 if(err) throw err
-                console.log(res);
+                ;
             });
             console.log("Successfully Deleted Employee")
             mainMenu();

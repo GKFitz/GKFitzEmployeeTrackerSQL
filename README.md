@@ -7,6 +7,9 @@ This application is a command line employee database tracker. It tracks deparmen
 ## License
 ![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)
 
+## Screenshot
+![image](https://user-images.githubusercontent.com/73301331/113653683-4c8ae880-9664-11eb-8927-cb289b88cf53.png)
+
 ## Table of Contents
 * [Description](#Description)
 * [Installation](#Installation)

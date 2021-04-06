@@ -76,9 +76,6 @@ function mainMenu() {
         case 'Add an employee':
             createEmployee();
         break;
-        // case 'Update employee department':
-        //     updateDepartment();
-        // break;
         case 'Update employee role':
             updateRole();
         break;
@@ -150,16 +147,7 @@ function createDepartment() {
             })
         })
 }
-// .then(function(answer){
-// let query= `INSERT into department (name) VALUES ("${name}")`;
-// connection.query(query, function(err, res){
-//     if(err) throw err
-//     console.log(`You have added this department: ${(answer.department)}.`)
-            
-//     // console.log("Department created!")
-// })
-// readDepartment();
-// })
+
 
    
 
@@ -313,9 +301,6 @@ function updateRole() {
     let employees= [];
     connection.query(queryEmployee, function(err, res){
         if(err) throw err
-        // console.log(res)
-        // mainMenu();
-        //console.table(result) 
         for(let i= 0; i < res.length; i++){
             let currentEmployee = res[i];
             var currentName = currentEmployee.first_name + " " + currentEmployee.last_name;
@@ -395,19 +380,8 @@ function updateRole() {
 
     
 }
-// // id, prop, value
-// function updateEmployeeRole(id, prop, value){
-//     let query= `UPDATE employee set ${prop} = "${value} where id = "${id}`; 
-//     connection.query("UPDATE employee SET role_id = ? WHERE first_name = ?", [response.role_id, response.name],query, function(err,result){
-//         if(err){
-//             throw err
-//         }
-//         console.log("Employee updated!")
-//     })
-    
-// }
+
 function deleteEmployee() {
-    console.log("trying to delete!!!!")
     let queryEmployee= "SELECT * from employee";
     let employee_name= [];
     let employees= [];
@@ -431,7 +405,7 @@ function deleteEmployee() {
     .prompt([
         {
             name: "employee",
-            message: "What is the name of the employee you would like to update?",
+            message: "What is the name of the employee you would like to Destroy?",
             type: "list",
             choices: employee_name
             
@@ -439,7 +413,6 @@ function deleteEmployee() {
       
     ]).then(function(res){
             let employeeID;
-            let roleID;
             for(var i =0; i < employees.length; i++){
                 let currentEmployee= employees[i];
                 if(currentEmployee.name === res.employee){
@@ -447,19 +420,8 @@ function deleteEmployee() {
                 }
                 
             }
-            for(var i =0; i < roles.length; i++){
-                let newRole= roles[i];
-                if(newRole.title === res.role_id){
-                    roleID = newRole.id;
-                }
-                
-            }
             connection.query(
-                `UPDATE employee
-                SET role_id = ?
-                WHERE id = ?;`,
-                [roleID, employeeID],
-            function(err,res){
+                "DELETE FROM employee WHERE id = ? ;", employeeID,function(err,res){
                 if(err) throw err
                 console.log(res);
             });
@@ -468,13 +430,7 @@ function deleteEmployee() {
 
     
 }
-    // let query= `DELETE from employee where id = "${id}"`;
-    // connection.query(query, function(err, result){
-    //     if(err){
-    //         throw err
-    //     }
-    //     console.log("employee deleted!")   
-    // }) 
+
     
     
 

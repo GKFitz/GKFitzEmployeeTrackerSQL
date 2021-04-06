@@ -82,9 +82,9 @@ function mainMenu() {
         case 'Update employee role':
             updateRole();
         break;
-        // case 'Update employee':
-        //     updateEmployee();
-        // break;
+        case 'Delete an Employee':
+            deleteEmployee();
+        break;
         case 'Exit':
             connection.end();
         break;
@@ -318,7 +318,6 @@ function updateRole() {
         //console.table(result) 
         for(let i= 0; i < res.length; i++){
             let currentEmployee = res[i];
-            // var currentName = currentEmployee.first_name;
             var currentName = currentEmployee.first_name + " " + currentEmployee.last_name;
             var currentEmployeeID = currentEmployee.id;
             let employeeOBJ= {
@@ -327,18 +326,14 @@ function updateRole() {
             }
             employees.push(employeeOBJ);
             employee_name.push(currentName);
-            // console.log(employee_name);
-            // console.log(employees);
+           
         }  
     });
-    // console.log(employee_name)
     let queryRole= "SELECT * from role";
     let role_name= [];
     var roles= [];
     connection.query(queryRole, function(err, res){
         if(err) throw err
-        // console.table(res)
-        // console.log(res)
         for(let i= 0; i < res.length; i++){
             let currentRole= res[i];
             var currentTitle = currentRole.title;
@@ -370,38 +365,119 @@ function updateRole() {
             choices: role_name
         }
     ]).then(function(res){
-            console.log(res)
-            // connection.query("UPDATE employee SET role_id = ? WHERE first_name = ?, WHERE last_name =?", [res.role_id, res.first_name, res.last_name], function(err,res){
-            //     if(err) throw err
-            //     console.log(res);
-            // });
-            // mainMenu();
+            let employeeID;
+            let roleID;
+            for(var i =0; i < employees.length; i++){
+                let currentEmployee= employees[i];
+                if(currentEmployee.name === res.employee){
+                    employeeID = currentEmployee.id;
+                }
+                
+            }
+            for(var i =0; i < roles.length; i++){
+                let newRole= roles[i];
+                if(newRole.title === res.role_id){
+                    roleID = newRole.id;
+                }
+                
+            }
+            connection.query(
+                `UPDATE employee
+                SET role_id = ?
+                WHERE id = ?;`,
+                [roleID, employeeID],
+            function(err,res){
+                if(err) throw err
+                console.log(res);
+            });
+            mainMenu();
         }), 1000)
 
     
 }
-// id, prop, value
-function updateEmployeeRole(id, prop, value){
-    let query= `UPDATE employee set ${prop} = "${value} where id = "${id}`; 
-    connection.query("UPDATE employee SET role_id = ? WHERE first_name = ?", [response.role_id, response.name],query, function(err,result){
-        if(err){
-            throw err
-        }
-        console.log("Employee updated!")
-    })
+// // id, prop, value
+// function updateEmployeeRole(id, prop, value){
+//     let query= `UPDATE employee set ${prop} = "${value} where id = "${id}`; 
+//     connection.query("UPDATE employee SET role_id = ? WHERE first_name = ?", [response.role_id, response.name],query, function(err,result){
+//         if(err){
+//             throw err
+//         }
+//         console.log("Employee updated!")
+//     })
+    
+// }
+function deleteEmployee() {
+    console.log("trying to delete!!!!")
+    let queryEmployee= "SELECT * from employee";
+    let employee_name= [];
+    let employees= [];
+    connection.query(queryEmployee, function(err, res){
+        if(err) throw err 
+        for(let i= 0; i < res.length; i++){
+            let currentEmployee = res[i];
+            var currentName = currentEmployee.first_name + " " + currentEmployee.last_name;
+            var currentEmployeeID = currentEmployee.id;
+            let employeeOBJ= {
+                id: currentEmployeeID,
+                name: currentName,
+            }
+            employees.push(employeeOBJ);
+            employee_name.push(currentName);
+           
+        }  
+    });
+    console.log("loading employees")
+    setTimeout(() => inquirer
+    .prompt([
+        {
+            name: "employee",
+            message: "What is the name of the employee you would like to update?",
+            type: "list",
+            choices: employee_name
+            
+        },  
+      
+    ]).then(function(res){
+            let employeeID;
+            let roleID;
+            for(var i =0; i < employees.length; i++){
+                let currentEmployee= employees[i];
+                if(currentEmployee.name === res.employee){
+                    employeeID = currentEmployee.id;
+                }
+                
+            }
+            for(var i =0; i < roles.length; i++){
+                let newRole= roles[i];
+                if(newRole.title === res.role_id){
+                    roleID = newRole.id;
+                }
+                
+            }
+            connection.query(
+                `UPDATE employee
+                SET role_id = ?
+                WHERE id = ?;`,
+                [roleID, employeeID],
+            function(err,res){
+                if(err) throw err
+                console.log(res);
+            });
+            mainMenu();
+        }), 1000)
+
     
 }
-function deleteEmployee(id) {
-    let query= `DELETE from employee where id = "${id}"`;
-    connection.query(query, function(err, result){
-        if(err){
-            throw err
-        }
-        console.log("employee deleted!")   
-    }) 
+    // let query= `DELETE from employee where id = "${id}"`;
+    // connection.query(query, function(err, result){
+    //     if(err){
+    //         throw err
+    //     }
+    //     console.log("employee deleted!")   
+    // }) 
     
     
-}
+
 
 
     

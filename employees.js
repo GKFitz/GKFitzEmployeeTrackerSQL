@@ -13,23 +13,6 @@ const connection = mysql.createConnection({
 connection.connect(function(err) {
     if (err) throw err;
     console.log("mysql connected");
-    // createDepartment("Admin");
-    // createRole("VP", 150000, 1);
-    // createEmployee("Claire", "Clareson", 1, 1);
-    // createDepartment();
-    // createRole("VP", 150000, 1);
-    // createEmployee("Claire", "Clareson", 1, 1);
-    // updateDepartment(1, "name", "Accounts Rec");
-    // updateEmployee(2, "first_name", "kelly");
-    // updateEmployee(2, "last_name", "Keller");
-    // updateDepartment();
-    // updateRole();
-    // updateEmployee();
-    // deleteEmployee(4);
-    //readDepartment();
-    // readRole();
-    //readEmployee();
-
     console.log("Welcome to the Employee Tracker!");
     mainMenu();
     
@@ -48,13 +31,12 @@ function mainMenu() {
           "View all employees",
           "Add a department",
           "Add a role",
-        //   "Add an employee",
-        //   "Update employee department",
+          "Add an employee",
           "Update employee role",
           "Delete an Employee",
           "Exit"
         ],
-        // name: "choice"
+       
       })
     .then(answer => {
         switch (answer.choice){
@@ -101,11 +83,9 @@ function readDepartment() {
     })
     
 };
-// console.table(result)   
+   
      
     
-    
-
 function readRole() {
     let query= "SELECT * from role";
     connection.query(query, function(err, res){
@@ -115,9 +95,7 @@ function readRole() {
         mainMenu();
         
     })
-    //mainMenu();
-
-    //console.table(result)   
+       
 }
 
 function readEmployee() {
@@ -126,7 +104,7 @@ function readEmployee() {
         if(err) throw err
         console.table(res)
         mainMenu();
-        //console.table(result)   
+         
         
     }) 
     
@@ -142,7 +120,7 @@ function createDepartment() {
         }]).then(function(res) {
             connection.query('INSERT INTO department (name) VALUES (?)', [res.department], function(err, res) {
                 if (err) throw err;
-                console.table(res);
+                console.table(res)
                 mainMenu();
             })
         })
@@ -158,8 +136,8 @@ function createRole() {
     var department= [];
     connection.query(query, function(err, res){
         if(err) throw err
-        // console.table(res)
-        // console.log(res)
+        console.table(res)
+        
         for(let i= 0; i < res.length; i++){
             let currentDept= res[i];
             var currentName = currentDept.name;
@@ -199,30 +177,17 @@ function createRole() {
                 }
                 
             }
-            // console.log(department)
-            // console.log(departmentID)
-            console.log(res.title)
-            console.log(res.salary)
-            console.log(departmentID)
+        
+            
             connection.query(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`, [res.title, res.salary, departmentID], function(err, res){
                 if(err) throw err
                 console.table(res);
             });
+            console.log("Role created!");
             mainMenu();
         });
 } 
-// title, salary, department_id
-// choices: function() {
-//     var choicesArray = [];
-//     res.forEach(res => {
-//         choicesArray.push(
-//             res.name
-//         );
-//     })
-//     return choicesArray;
-//   }
-          
-//console.log("Role created!")
+
    
 
 function createEmployee() {
@@ -231,8 +196,7 @@ function createEmployee() {
     var roles= [];
     connection.query(query, function(err, res){
         if(err) throw err
-        // console.table(res)
-        // console.log(res)
+        
         for(let i= 0; i < res.length; i++){
             let currentRole= res[i];
             var currentTitle = currentRole.title;
@@ -275,8 +239,7 @@ function createEmployee() {
                 }
                 
             }
-            // console.log(roles)
-            // console.log(roleID)
+           
             connection.query(`INSERT into employee(first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [res.first_name, res.last_name, roleID, null], function(err, res){ 
                 if(err) throw err;
                 console.table(res);
@@ -285,15 +248,15 @@ function createEmployee() {
 
 })
 }
-function updateDepartment(id, prop, value) {
-    let query= `UPDATE department set ${prop} = "${value} where id = "${id}`;
-    connection.query(query, function(err,result){
-        if(err){
-            throw err
-        }
-        console.log("Department updated!")
-    })
-}
+// function updateDepartment(id, prop, value) {
+//     let query= `UPDATE department set ${prop} = "${value} where id = "${id}`;
+//     connection.query(query, function(err,result){
+//         if(err){
+//             throw err
+//         }
+//         console.log("Department updated!")
+//     })
+// }
 
 function updateRole() {
     let queryEmployee= "SELECT * from employee";
@@ -405,7 +368,7 @@ function deleteEmployee() {
     .prompt([
         {
             name: "employee",
-            message: "What is the name of the employee you would like to Destroy?",
+            message: "What is the name of the employee you would like to Delete?",
             type: "list",
             choices: employee_name
             
@@ -425,6 +388,7 @@ function deleteEmployee() {
                 if(err) throw err
                 console.log(res);
             });
+            console.log("Successfully Deleted Employee")
             mainMenu();
         }), 1000)
 

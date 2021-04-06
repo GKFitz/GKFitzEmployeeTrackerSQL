@@ -2,7 +2,7 @@
 Gillian Corp Employee Tracker
 
 ## Description
-This application is a command line employee database tracker. It tracks deparments, roles and employees. You can view all departments roles, and employees, create deparments, roles and employee. It also updates an employees roles, and can delete an employee within the database altogether.   
+This application is a command line employee database tracker powered by MySQL and inquirer. It tracks deparments, roles and employees. You can view all departments roles, and employees, create deparments, roles and employee. It also updates an employees roles, and can delete an employee within the database altogether.   
 
 ## License
 ![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)
